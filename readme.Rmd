@@ -1,0 +1,8 @@
+---
+title: "readme"
+author: "Kacper Prorok"
+date: "2023-10-07"
+output: html_document
+---
+
+dupa
