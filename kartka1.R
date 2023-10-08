@@ -1,3 +1,36 @@
+#zad 1
+pierwsza<-c(1:8)
+druga<-c(13,5,2,7,9,121,65,4)
+
+suma<-pierwsza+druga
+różnica<-pierwsza-druga
+więcej<-pierwsza+1
+
+mean(x = pierwsza)
+sd(x = druga)
+
+#zad2
+
+wzrost<-c(160,170,145,188,190,187,156)
+waga<-c(70,66,50,90,88,67,86)
+osoba<-data.frame(wzrost,waga)
+
+str(osoba)
+head(osoba)
+tail(osoba)
+dim(osoba)
+summary(osoba)
+
+#zad3
+help("row.names")
+row.names(osoba)<-c("Jan","Adam","Gosia","Patryk","Andrzej","John","Ala")
+head(osoba)
+(BMI<-waga/(wzrost/100)^2)
+
+BMI[BMI>30]
+
+sum(BMI<=25)
+#zad 4
 datasets::mtcars
 datasets::Orange
 
@@ -37,6 +70,20 @@ sample(0:100,10,replace = T)
 plot(rt(100,df = 1))
 plot(rpois(n = 100,2))
 plot(rnorm(n = 100,mean = 3,sd = 1))
+
+#zad7
+lista <- list(palenie <- c(F,T,T,F,F,T,F),
+              cyfry <- 0:9,
+              macierz <- matrix(sample(1:5,16,replace = T),4,4),
+              tekst <- c("Litwo", "ojczyzno", "moja", "ty",
+                         "jestes", "jak", "zdrowie"))
+lista[4]
+###
+cyfry<-c(lista[[2]])
+cyfry[3]
+###
+print(lista[[3]][,3])
+
 
 #zad8
 liczba<-as.numeric(readline("wprowdź liczbe: "))
