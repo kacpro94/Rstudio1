@@ -84,6 +84,34 @@ cyfry[3]
 ###
 print(lista[[3]][,3])
 
+#zad8
+wiek <- c(50, 17, 39, 27, 90)
+waga <- c(80, 75, 92, 105, 60)
+pacjenci<-data.frame(wiek,waga)
+
+pacjenci<-pacjenci[wiek>18&waga<90,]
+
+#zad 9
+
+library(nycflights13)
+
+flight_lm <- lm(arr_delay ~ dep_delay + month + carrier, 
+                data = flights)
+
+str(flight_lm)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #zad8
 liczba<-as.numeric(readline("wprowdź liczbe: "))
@@ -123,4 +151,6 @@ if(miesiac==1&3&5&7&8&10&12){
   
 }else{print("miesiac ma 30 dni")}
 #zad 11
-#chujek
+
+
+
