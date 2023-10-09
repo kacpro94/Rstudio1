@@ -56,7 +56,7 @@ library(psych)
 describe(mtcars)
 summary(mtcars)
 ?describeBy
-describeBy()
+describeBy(mtcars,mtcars$cyl)
 
 #zad6
 proba<-sample(1:6,20,replace=T)
@@ -98,22 +98,29 @@ library(nycflights13)
 flight_lm <- lm(arr_delay ~ dep_delay + month + carrier, 
                 data = flights)
 
+head(flight_lm)
+View(flight_lm)
 str(flight_lm)
+names(flight_lm)
+summary(flight_lm)
+#zad 1o
+VADeaths
+colnames(VADeaths)
+rownames(VADeaths)
 
+male<-matrix(VADeaths[,c(1,3)],,2)
+female<-matrix(VADeaths[,c(2,4)],,2)
 
+mean(male[,1])
+mean(male[,2])
+srednia<-c(mean(male[,1]),mean(male[,2]))
+male1<-rbind(male,srednia)
 
+srednia2<-c(mean(female[,1]),mean(female[,2]))
+female1<-rbind(female,srednia2)
 
+#zad11****************
 
-
-
-
-
-
-
-
-
-
-#zad8
 liczba<-as.numeric(readline("wprowdź liczbe: "))
 liczba
 if(liczba%%4==0){
@@ -121,7 +128,8 @@ if(liczba%%4==0){
 } else{
   print("liczba niepodzielna przez 4")
 }
-#zad9
+
+#zad12********************8
 ksiazki <- sample(0:4, size = 25, replace = TRUE)
 mean(ksiazki)
 
@@ -137,7 +145,7 @@ for(x in ksiazki){
 }
 ksiazki2#tyle osob czyta ksiazki
 
-#zad10
+#****
 
 miesiac<-as.numeric(readline("podaj numer miesiaca: "))
 
@@ -150,7 +158,3 @@ if(miesiac==1&3&5&7&8&10&12){
   }else{print("miesiac ma 28 dni")}
   
 }else{print("miesiac ma 30 dni")}
-#zad 11
-
-
-
