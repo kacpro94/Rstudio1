@@ -123,3 +123,4 @@ if(miesiac==1&3&5&7&8&10&12){
   
 }else{print("miesiac ma 30 dni")}
 #zad 11
+#chujek
