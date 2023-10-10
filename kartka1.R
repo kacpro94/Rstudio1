@@ -158,3 +158,35 @@ if(miesiac==1&3&5&7&8&10&12){
   }else{print("miesiac ma 28 dni")}
   
 }else{print("miesiac ma 30 dni")}
+#zad 13
+
+zmiana_fahrenheit=function(celcjusza){
+  fahrenheita<-celcjusza*2+30
+  
+  return(fahrenheita)
+  
+}
+zmiana_kelwin=function(celcjusza){
+  kelwina<-celcjusza-273.15
+  return(kelwina)
+}
+zmiana_stopni=function(celcjusza){
+  fahrenheita<-celcjusza*2+30
+  kelwina<-celcjusza-273.15
+  #cat("temp w f="+fahrenheita+" temp w K="+kelwina)
+}
+fahrenheit<-zmiana_fahrenheit(25)
+kelwin<-zmiana_kelwin(25)
+zmiana_stopni(25)
+  
+#zad  14
+
+pole_trojkata=function(bok1,bok2,bok3){
+  if((bok1+bok2<bok3)||(bok1+bok3<bok2)||(bok2+bok3<bok1)){
+    print("to nie trojkat")
+  }
+  p=(bok1+bok2+bok3)/2
+  pole=(p*(p-bok1)*(p-bok2)*(p-bok3))^(1/2)
+  return(pole)
+}
+pole1=pole_trojkata(3,4,5)
