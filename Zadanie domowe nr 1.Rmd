@@ -1,0 +1,21 @@
+---
+title: "Zadanie domowe nr 1"
+author: "Kacper Prorok"
+date: "2023-10-11"
+output: html_document
+---
+
+# zadanie 1
+```{r}
+pierwsza<-c(1:8)
+druga<-c(13,5,2,7,9,121,65,4)
+
+suma<-pierwsza+druga
+różnica<-pierwsza-druga
+więcej<-pierwsza+1
+
+mean(x = pierwsza)
+sd(x = druga)
+```
+
+
