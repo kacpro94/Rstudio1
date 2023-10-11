@@ -27,13 +27,13 @@ row.names(osoba)<-c("Jan","Adam","Gosia","Patryk","Andrzej","John","Ala")
 head(osoba)
 (BMI<-waga/(wzrost/100)^2)
 
-BMI[BMI>30]
+osoby[osoby$BMI>30]
 
 sum(BMI<=25)
 #zad 4
 datasets::mtcars
 datasets::Orange
-
+?Orange
 str(mtcars)
 str(Orange)
 ####
@@ -44,13 +44,13 @@ auta<-mtcars$mpg
 mtcars[mtcars$cyl==6,]
 ####
 spalanie<-mtcars[mtcars$mpg<20,]
-mean(spalanie$hp)
+mean(mtcars[mtcars$mpg<20,4])
 ####
 hist(Orange$age)
 ####
-boxplot(mtcars$mpg)
-boxplot(mtcars$hp)      
-boxplot(mtcars$qsec)      
+data<-data.frame(mpg=mtcars$mpg,hp=mtcars$hp,qsec=mtcars$qsec)
+boxplot(data)
+     
 #zad5
 library(psych)
 describe(mtcars)

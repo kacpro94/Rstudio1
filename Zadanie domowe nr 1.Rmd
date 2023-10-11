@@ -5,17 +5,137 @@ date: "2023-10-11"
 output: html_document
 ---
 
-# zadanie 1
+# **Zadanie 1**
+
+## Tworzenie zmiennych o nazwach *pierwsza* i *druga*
+
 ```{r}
 pierwsza<-c(1:8)
 druga<-c(13,5,2,7,9,121,65,4)
+```
 
-suma<-pierwsza+druga
-różnica<-pierwsza-druga
-więcej<-pierwsza+1
+## Wyznaczanie sumy, różnicy oraz zmiennej *więcej*
 
+```{r}
+(suma<-pierwsza+druga)
+(różnica<-pierwsza-druga)
+(więcej<-pierwsza+1)
+```
+
+## Obliczanie średniej arytmetycznej oraz odchylenia standardowego
+
+```{r}
 mean(x = pierwsza)
 sd(x = druga)
 ```
 
+# **Zadanie 2**
 
+## Tworzenie ramki o nazwie *osoby*
+
+```{r}
+wzrost<-c(160,170,145,188,190,187,156)
+waga<-c(70,66,50,90,88,67,86)
+osoba<-data.frame(wzrost,waga)
+```
+
+## Użycie funkcji do inspekcji danych
+
+```{r}
+str(osoba)
+```
+
+```{r}
+head(osoba)
+```
+
+```{r}
+tail(osoba)
+```
+
+```{r}
+dim(osoba)
+```
+
+```{r}
+summary(osoba)
+```
+
+# **Zadanie 3**
+
+## Nadanie imion obiektom w ramce osoby
+
+```{r}
+row.names(osoba)<-c("Jan","Adam","Gosia","Patryk","Andrzej","John","Ala")
+head(osoba)
+```
+
+## Tworzenie obiektu BMI
+
+```{r message=FALSE}
+(BMI<-waga/(wzrost/100)^2)
+```
+
+## Wyświetlanie osób z BMI\>30
+
+```{r}
+osoba[BMI>30,]
+```
+
+## Suma osób z BMI\<25
+
+```{r}
+sum(BMI<=25)
+```
+
+Czyli mamy 4 osoby z BMI\<25
+
+# **Zadanie 4**
+
+### Wczytywanie pakietów danych *Orange* oraz *mtcars*
+
+```{echo = FALSE}
+datasets::mtcars
+datasets::Orange
+```
+
+### Zbiór danych *mtcars*
+
+```{r}
+str(mtcars)
+```
+
+Dane przedstawiają dane techniczne 32 samochodów z lat 1973-74. Możemy m.in. dowiedzieć się jakie spalanie mają poszczególne modele, ile mają cylindrów i jakie mają przyspieszenie na 1/4 mili.
+
+### Zbiór *Orange*
+
+```{r}
+str(Orange)
+```
+
+Dane zawierają 35 obserwacji i 3 kolumny. Opisują wiek i obwód drzew pomarańczowych w czasie.
+
+### Wyświetlanie samochodów z 6 cylindrami
+
+```{r}
+mtcars[mtcars$cyl==6,]
+```
+
+### Przeciętna liczba koni aut o spalaniu mniejszym niż 20
+
+```{r}
+mean(mtcars[mtcars$mpg<20,4])
+```
+
+### Rysowanie histogramu dla zmiennej *circumference* z zestawu *Orange*
+
+```{r}
+hist(Orange$circumference)
+```
+
+### Rysowanie wykresu pudełkowego dla zmiennych *mpg*,*hp* oraz *qsec* z zestawu *mtcars*
+
+```{r}
+data<-data.frame(mpg=mtcars$mpg,hp=mtcars$hp,qsec=mtcars$qsec)
+boxplot(data)
+```
