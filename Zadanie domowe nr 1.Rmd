@@ -136,6 +136,9 @@ hist(Orange$circumference)
 ### Rysowanie wykresu pudełkowego dla zmiennych *mpg*,*hp* oraz *qsec* z zestawu *mtcars*
 
 ```{r}
+
 data<-data.frame(mpg=mtcars$mpg,hp=mtcars$hp,qsec=mtcars$qsec)
 boxplot(data)
 ```
+
+# **Zadanie 5**
