@@ -190,3 +190,110 @@ pole_trojkata=function(bok1,bok2,bok3){
   return(pole)
 }
 pole1=pole_trojkata(3,4,5)
+
+#zad15
+jaki_trojkat=function(bok1,bok2,bok3){
+  if((bok1+bok2<bok3)||(bok1+bok3<bok2)||(bok2+bok3<bok1)){
+    print("to nie trojkat")
+  }
+  if(bok1^2+bok2^2>bok3^2){
+    print("to trojkat ostrokatny")
+  }
+  else if(bok1^2+bok2^2==bok3^2){
+    print("to trojkat prostokatny")
+  }
+  else{print("to trojkat rozwartokatny")}
+}
+jaki_trojkat(3,4,4)
+
+#zad16
+wzrost <- round(rnorm(100, 175, 10),0)
+waga   <- round(wzrost - 105 + rnorm(1,0,5))
+wiek   <- sample(20:60, 100, replace = TRUE)
+dzieci <- rpois(100, lambda = 1)
+osoby  <- data.frame(wzrost = wzrost, waga = waga,
+                     wiek = wiek, dzieci = dzieci)
+BMI<-sample(25:34,100,replace = T)
+plec<-rep(0:1,1,each=50)
+osoby<-cbind(osoby,BMI)
+osoby<-cbind(osoby,plec)
+
+str(osoby)
+head(osoby)
+tail(osoby)
+dim(osoby)
+summary(osoby)
+
+wynik<-sum(osoby$dzieci>=2)
+
+osoby[osoby$wzrost>=185,]
+
+mean(osoby[osoby$wzrost>=185,1])
+
+mean(osoby[osoby$plec==0,1])
+mean(osoby[osoby$plec==1,1])
+
+osoby[osoby$BMI>30,]
+
+sum(osoby[osoby$BMI>30,6]==0)
+sum(osoby[osoby$BMI>30,6]==1)
+
+wzrost2<-osoby$wzrost
+wzrost2[wzrost2>=185]<-"wysoki"
+wzrost2[wzrost2<185&wzrost2>=165]<-"sredni"
+wzrost2[wzrost2<165]<-"niski"
+osoby<-cbind(osoby,wzrost2)
+summary(wzrost2)
+factor(wzrost2)
+sum(wzrost2=="wysoki")
+
+#zad 17
+
+lista <- list(palenie <- c(F,T,T,F,F,T,F),
+              cyfry <- 0:9,
+              macierz <- matrix(sample(1:5,16,replace = T),4,4),
+              tekst <- c("Litwo", "ojczyzno", "moja", "ty",
+                         "jestes", "jak", "zdrowie"))
+lista[4]
+###
+cyfry<-c(lista[[2]])
+cyfry[3]
+###
+print(lista[[3]][,3])
+##
+liczba<-as.numeric(readline("wprowdź liczbe: "))
+
+if(liczba%%5==0){
+  print("liczba podzielna przez 4")
+} else{
+  print("liczba niepodzielna przez 4")
+}
+
+#zad 18
+ksiazki <- sample(0:4, size = 25, replace = TRUE)
+mean(ksiazki)
+
+sum(ksiazki>=3)
+sum(ksiazki==0)
+ksiazki2<-0
+for(x in ksiazki){
+  if(x>=1){
+    ksiazki2<-ksiazki2+1
+  }
+  
+  
+}
+ksiazki2#tyle osob czyta ksiazki
+#zad 19
+miesiac<-as.numeric(readline("podaj numer miesiaca: "))
+
+if(miesiac==1&3&5&7&8&10&12){
+  print("miesiac ma 31 dni")
+}else if(miesiac==2){
+  rok<-as.numeric(readline("Podaj rok: "))
+  if(rok%%4==0){
+    print("miesiac ma 29 dni")
+  }else{print("miesiac ma 28 dni")}
+  
+}else{print("miesiac ma 30 dni")}
+#zad 20
