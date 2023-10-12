@@ -65,7 +65,7 @@ describe(proba)
 rzut<-sample(1:2,100,replace=T)
 sum(rzut==1)
 ###
-sample(0:100,10,replace = T)
+sample(0:100,10,replace = F)
 ?rpois
 plot(rt(100,df = 1))
 plot(rpois(n = 100,2))

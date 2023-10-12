@@ -142,4 +142,132 @@ boxplot(data)
 ```
 
 # **Zadanie 5**
-dupa
+
+### Wczytywanie biblioteki *psych*
+```{r}
+library(psych)
+```
+
+### Użycie funkcji *describe* na pakiecie danych *mtcars*
+```{r}
+describe(mtcars)
+```
+Funkcja *describe()* daje nam więcej statystyk opisowych niż funkcja *summary()*
+
+### Użycie funkcji *describeBy()*
+```{r}
+describeBy(mtcars$cyl,mtcars$gear)
+```
+W naszym przypadku funkcja *describeBy()* pozwoliła nam na uzyskanie statystyk opisowych zmiennej *cyl*, gdy jest ona pogrupowana przez zmienną *gear*.
+
+# Zadanie 6
+
+### Generowanie 20 rzutów kostki do gry oraz obliczanie średniej i odchylenia standardowego
+```{r}
+proba<-sample(1:6,20,replace=T)
+mean(proba)
+sd(proba)
+```
+### Generowanie 100 rzutów monetą
+```{r}
+rzut<-sample(1:2,100,replace=T)
+cat("Tyle wypadło orłów: ",sum(rzut==1))
+```
+### Losowanie 10 liczb naturalnych z przedziału 0-100(bez zwracania)
+```{r}
+sample(0:100,10,replace = F)
+```
+
+### Przykład użycia funkcji *rpois()*
+```{r}
+plot(rpois(n = 100,2))
+```
+
+
+# Zadanie 7
+```{r include=FALSE}
+lista <- list(palenie <- c(F,T,T,F,F,T,F),
+              cyfry <- 0:9,
+              macierz <- matrix(sample(1:5,16,replace = T),4,4),
+              tekst <- c("Litwo", "ojczyzno", "moja", "ty",
+                         "jestes", "jak", "zdrowie"))
+```
+
+
+### Odwoływanie się do obiektu *tekst*
+```{r}
+lista[4]
+```
+
+### Odwoływanie się do trzeciego elementu wektora *cyfry*
+```{r}
+# 1 sposób
+cyfry<-c(lista[[2]])
+cyfry[3]
+## 2 sposób
+lista[[2]][3]
+```
+
+### Odwoływanie się do 3 kolumny obiektu *macierz*
+```{r}
+print(lista[[3]][,3])
+```
+
+# Zadanie 8
+
+### Tworzenie ramki *pacjenci*
+```{r}
+wiek <- c(50, 17, 39, 27, 90)
+waga <- c(80, 75, 92, 105, 60)
+pacjenci<-data.frame(wiek,waga)
+pacjenci
+```
+
+### Wykluczenie z ramki pacjentów o wadze >90 lub osób <18 lat
+```{r}
+pacjenci<-pacjenci[wiek>=18&waga<=90,]
+pacjenci
+```
+
+# Zadanie 9
+```{r include=FALSE}
+library(nycflights13)
+
+flight_lm <- lm(arr_delay ~ dep_delay + month + carrier, 
+                data = flights)
+```
+
+### Sprawdzanie ile jest pozycji na liście
+```{r}
+length(flight_lm)
+```
+
+### Sprawdzanie jak nazywają się elementy listy
+```{r}
+names(flight_lm)
+```
+### Sprawdzanie współczynników tego modelu
+```{r}
+summary(flight_lm)
+```
+
+
+# Zadanie 10
+
+### Wyświetlanie danych macierzy VADeaths
+```{r}
+VADeaths
+colnames(VADeaths)
+rownames(VADeaths)
+```
+Dane przedstawiają współczynnik śmiertelności w rozróżnieniu na grupy wiekowe, płeć oraz miejsce zamieszkania (miasto czy wieś)
+
+### Dzielenie macierzy na dwie podmacierze
+```{r warning=FALSE}
+male<-matrix(VADeaths[,c(1,3)],,2)
+#pierwszy argument funkcji matrix to VADeaths[,c(1,3)], co oznacza że moimi wartościami w nowej macierzy male będą kolumny 1,3 z macierzy VADeaths. 
+female<-matrix(VADeaths[,c(2,4)],,2)
+#podobnie jak wyżej, tylko tutaj moimi wartościami mnowej macierzy female bedą kolumny 2,4 z macierzy VADeaths.
+```
+
+### Obliaczanie średnich wierszy oraz kolumn
