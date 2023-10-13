@@ -173,11 +173,13 @@ zmiana_kelwin=function(celcjusza){
 zmiana_stopni=function(celcjusza){
   fahrenheita<-celcjusza*2+30
   kelwina<-celcjusza-273.15
-  #cat("temp w f="+fahrenheita+" temp w K="+kelwina)
+  cat("temp w f=",fahrenheita," temp w K=",kelwina)
 }
 fahrenheit<-zmiana_fahrenheit(25)
 kelwin<-zmiana_kelwin(25)
 zmiana_stopni(25)
+kelwina
+
   
 #zad  14
 
