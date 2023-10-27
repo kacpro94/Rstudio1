@@ -1,0 +1,14 @@
+---
+title: "zadanie domowe nr 2"
+author: "Kacper Prorok"
+date: "2023-10-27"
+output: 
+  html_document:
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Zadanie 1
