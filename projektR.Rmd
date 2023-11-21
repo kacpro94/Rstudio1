@@ -59,10 +59,14 @@ Zaczynamy od wydawać by się mogło czegoś oczywistego, czyli czy faktycznie w
 str(dane$studytime)
 table(dane$studytime)
 ```
--'1' to <2 godziny
--'2' to od 2 do 5 godzin
--'3' to od 5 do 10 godzin
--'4' to >10 godzin
+
+ -'1' to <2 godziny
+ 
+ -'2' to od 2 do 5 godzin
+ 
+ -'3' to od 5 do 10 godzin
+ 
+ -'4' to >10 godzin
 
 Zamienimy zmienną `studytime` na faktor, oraz nadamy kolejności kategoriom.
 ```{r}
@@ -144,14 +148,118 @@ Przyjrzyjmy się kolumnom `Fedu`(wykształcenie ojca) oraz `Medu`(wykształcenie
 
 Przekształćmy te zmienne na typ factor:
 ```{r}
-dane$Fedu<-factor(dane$Fedu)
-dane$Medu<-factor(dane$Medu)
+#dane$Fedu<-factor(dane$Fedu)
+#dane$Medu<-factor(dane$Medu)
 ```
 
 Wyodrębnie teraz z tabelki dane tylko potrzebne nam atrybuty:
 ```{r}
 dane1<-dane%>%
-  select(Medu,Fedu,G3)
+  select(Medu,Fedu,G3,Mjob,Fjob)
+```
+
+Zobaczmy najpierw jak wyglada wykształcenie matek w naszych danych:
+```{r}
+table(dane1$Medu)
+```
+A teraz ojców:
+```{r}
+table(dane1$Fedu)
+```
+Czyli mamy więcej matek z co najmniej średnim wykształceniem. Zobaczmy więc jakie zawody głownie wykonują matki:
+
+```{r}
+dane2<-dane1%>%
+  select(Mjob)%>%
+  group_by(Mjob)%>%
+  count()%>%
+  rename("job"=Mjob,"Mjob"=n)
+dane3<-dane1%>%
+  select(Fjob)%>%
+  group_by(Fjob)%>%
+  count()
+dane2<-cbind(dane2,"Fjob"=dane3$n)
+ggplot(dane2, aes(x = factor(job), y =Mjob)) +
+  geom_col()
+
+```
+A teraz narysujmy wykres dla ojców:
+```{r}
+ggplot(dane2,aes(x=factor(job),y=Fjob))+
+  geom_col()
+```
+
+Widzimy, że zdecydowanie mniej ojców zostaje w domu oraz pracuje w medycynie lub jako nauczyciel, co może mieć związek z gorszym wykształceniem posiadanych przez ojców. Sprawdźmy zatem, czy faktycznie wykształcenie ma wpływ na wykonywany przez matki zawód:
+```{r}
+ggplot()+
+  geom_bar(aes(x=dane1$Mjob,fill=factor(dane1$Medu)),
+           position = "fill")+
+  theme_light()+
+  labs(title = "Wykształcenie matki a jej praca",
+       x="Praca matki",
+       y="Odsetek liczności",
+       fill="Poziom wykształcenia")
+```
+Tak jak podejrzewałem, matki które pracują jako nauczycielki lub pracują w medycynie w przeważającej części mają wykształcenie wyższe. Kolejne wnioski, jakie można wysnuć z wykresu to to, że większość matek, które nie pracują tylko zostają w domu, ma gorsze wykształcenie.
+
+Przejdźmy do sprawdzenia czy poziom wykształcenia rodziców wpływa na ocenę końcową `G3`. W naszym zestawie danych pojawia się jeszcze jedna ciekawy atrybut - `famrel`, który mówi nam o "jakości" relacji rodzinnych, gdzie 1 to źłe, 5 to bardzo dobre.
+
+```{r}
+dane4<-dane%>%
+  select(G3,Medu,Fedu,famrel)%>%
+  mutate("wyksztalcenie"=(Medu+Fedu)/2,"wykifam"=((Medu+Fedu)/2)*famrel)
+```
+Zanim przedstawimy dane na wykresie sprawdźmy liczności stworzonych przeze mnie grup:
+```{r}
+table(dane4$wyksztalcenie)
+```
+Widzimy, że grupa z wykształceniem "0.5" ma tylko dwie obserwacje, więc wliczę ją do grupy 1.0, aby nie zakłamywała wyników.
+```{r}
+dane4<-dane4%>%
+  mutate(wyksztalcenie=ifelse(wyksztalcenie==0.5,1,wyksztalcenie))
 ```
 
 
+Zobaczymy teraz czy istneją jakieś zależności między `G3`, a `wyksztalcenie`(aby wykres był czytelny pokażę tylko wykształcenie=1 oraz =4)
+```{r}
+dane4%>%
+  filter(wyksztalcenie==1|wyksztalcenie==4)%>%
+ggplot()+
+  geom_density(aes(x=G3,fill=factor(wyksztalcenie)))
+```
+Istneje dosyć wyraźna różnica między oceną końcową, a wykształceniem rodziców. Widzimy, że dla wykształcenia =4 ocena `G3` najczęściej występuje w okolicach 12-14, a dla wykształcenia =1 większość wyników skupia się w okolicach 10. Dodatkowo dla słabszego wykształcenia dużo więcej uczniów miało ocenę `G3` w okolicah 0 punktów.
+
+Jeszcze na koniec sprawdźmy, czy rodzice którzy nie mieszkają z dzieckiem mają wpływ na ilość spożycia alkoholu przez dziecko. Do zbadania tego przyda nam się atrybut `Pstatus`, który przyjmuję wartość `T` jeśli rodzice mieszkają razem, oraz wartość `A`, jeśli mieszkają osobno. Zmienię typ zmiennej na factor oraz sprawdzę liczności dwóch grup:
+
+```{r}
+dane5<-dane%>%
+  group_by(Pstatus)%>%
+  count()
+dane5
+```
+
+Jak widzimy liczność próbki `A` jest dużo mniejsza od `T`, ale nadal jest to 40 obserwacji więc wyniki nie powinny być zakłamane. Obliczmy teraz statystyki opisowe:
+```{r}
+dane5<-dane%>%
+  select(Pstatus,Dalc,Walc,)%>%
+  mutate("spozycie"=Dalc+Walc)%>%
+  group_by(Pstatus)%>%
+  summarise(średnia=mean(spozycie),
+            odchylenie=sd(spozycie),
+            mediana=median(spozycie),
+            )
+dane5
+```
+Nie mamy tutaj zależności. Sprawdźmy jeszcze jaka będzie sytuacja dla oceny końcowej`G3` 
+
+```{r}
+dane5<-dane%>%
+  select(G3,Pstatus)%>%
+  group_by(Pstatus)%>%
+  summarise(średnia=mean(G3),
+            odchylenie=sd(G3),
+            mediana=median(G3),
+            )
+dane5
+```
+Zależność między oceną końcową, a tym czy rodzice mieszkają razem, jest niewielka. Można jedynie rzec, że to uczniowie których rodzice nie mieszkają razem, poradzili sobie troszeczkę lepiej. Lecz należy mieć na uwadze, że licznośc badanej próbki jest niewielka.
