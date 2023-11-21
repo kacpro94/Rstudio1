@@ -1,0 +1,157 @@
+---
+title: "projektKoncowy"
+author: "Kacper Prorok"
+date: "2023-11-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,echo=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(mice)
+library(corrplot)
+```
+# Wprowadzenie
+
+Zbiór danych przedstawia informację o uczniach dwóch szkół średnich, którzy uczęszczali na kursy matematyki i języka portugalskiego. W zbiorze danych znajduje się wiele informacji o otoczeniu ucznia - na przykład: wykształcenie obojga rodziców, czas dojazdu do szkoły, czy uczeń ma dostęp do internetu itp.
+
+Dane mają 395 rekordów oraz 33 kolumny. W moich rozważaniach uwzględnie tylko wybrane przez siebie atrybuty. 
+TUTAJ BEDZIE TRZEBA ZROBIC ROZDZIAL "ZMIENNE", ALE TO DOPIERO JAK ZROBIE RESZTE I POKAZE TYLKO TE ZMIENNE KTORYCH UZYWAM
+## Używane pakiety
+```{r warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(mice)
+library(corrplot)
+library(readr)
+```
+
+## Poznajemy dane
+
+Najpierw wczytamy dane
+```{r}
+dane <- read_csv("archive (4).zip")
+```
+
+
+```{r}
+head(dane)
+```
+Widzimy, że dane zawierają zmienne nominalne(np.:`Mjob`[miejsce pracy matki]), porządkowe(np.:`Medu`[0-4,poziom wykształcenia matki]) oraz ilościowe(np.:`Age`)
+
+```{r}
+str(dane)
+```
+
+
+# Przegląd danych
+
+## Czy ilość nauki wpływa na ocenę końcową
+
+Zaczynamy od wydawać by się mogło czegoś oczywistego, czyli czy faktycznie więcej czasu spędzonego na nauce przynosi rezultaty w postaci wyższej oceny końcowej. Zobaczmy więc najpierw jak wygląda atrybut `studytime`, który przedstawia ilość nauki w tygodniu:
+```{r}
+str(dane$studytime)
+table(dane$studytime)
+```
+-'1' to <2 godziny
+-'2' to od 2 do 5 godzin
+-'3' to od 5 do 10 godzin
+-'4' to >10 godzin
+
+Zamienimy zmienną `studytime` na faktor, oraz nadamy kolejności kategoriom.
+```{r}
+dane$studytime<-factor(dane$studytime)
+levels(dane$studytime)<-c("1","2","3","4")
+```
+
+Przyjrzyjmy się teraz zmiennej `G3`, która przedstawia końcową ocenę ucznia:
+```{r}
+summary(dane$G3)
+```
+Widzimy, że `G3` jest z przedziału 0-20, a średnia wynosi 10.42. Jeśli założymy, że próg zdawalności to *50%*, to zdawalność jest na niskim poziomie.
+
+```{r}
+dane%>%
+  ggplot()+
+  geom_density(aes(x=G3))
+
+```
+
+Widzimy również spory wzrost obserwacji przy zbliżaniu się do 0.
+
+Sprawdźmy teraz jakie są liczności tych grup:
+```{r}
+dane%>%
+  group_by(studytime)%>%
+  count()
+```
+
+Jako że grupa uczniów, którzy uczyli się >10 godzin jest nieliczna to połącze ją z grupą '3':
+```{r}
+dane0<-dane%>%
+  select(studytime,G3)%>%
+  mutate(studytime=ifelse(studytime==3|studytime==4,3,studytime))
+```
+
+Sprawdźmy teraz, czy więcej godzin nauki przynosi efekty w postaci wyższej oceny końcowej.Przy okazji zamieniam zmienną `studytime` na typ factor:
+```{r}
+ggplot(dane0,aes(y=factor(studytime),x=G3))+
+  geom_boxplot()
+```
+Tak jak można się było spodziewać, więcej nauki w ciągu tygodnia przynosi efekty w postaci wyższych ocen końcowych. Lecz co ciekawe, nie ma aż tak znaczącej różnicy między uczniami, którzy uczyli się mniej niż 2 godziny, a tymi którzy uczyli się więcej niż 5 godzin. Potwierdźmy to jeszcze statystykami opisowymi:
+
+```{r}
+dane0%>%
+  group_by(studytime)%>%
+  summarise(srednia=mean(G3),
+            sd=sd(G3),
+            mediana=median(G3))
+```
+
+
+Sprawdźmy jeszcze, ile osób które uczyły się mniej niż 2 godziny nie zdało(zakładając, że trzeba mieć więcej niż 50%-<10pkt)
+```{r}
+dane0%>%
+  select(studytime,G3)%>%
+  filter(studytime==1)%>%
+  count(G3<10)
+```
+37 uczniów nie zdało semestru.A teraz sprawdźmy jak sytuacja ma się u osób, które uczyły się więcej niż 5 godzin:
+```{r}
+dane0%>%
+  select(studytime,G3)%>%
+  filter(studytime==3)%>%
+  count(G3<10)
+```
+Tutaj widzimy, że 23 uczniów nie zaliczyło semestru. Oczywiście trzeba wziąc pod uwagę to, że grupa tych uczniów była troszeczkę mniej liczna, ale znów - różnice w wynikach końcowych uczniów są niewielkie.
+
+## Sprawdzanie czy wykształcenie rodziców oraz ich zawód ma wpływ na wynik końcowy
+
+Zaczniemy od wpływu wykształcenia obojga rodziców.
+Przyjrzyjmy się kolumnom `Fedu`(wykształcenie ojca) oraz `Medu`(wykształcenie matki). Zawierają one dane o poziomie wykształcenia rodzica oraz:
+
+- 0 = brak wykształcenia
+- 1 = od 1 do 4 klasy szkoły podstawowej
+- 2 = wykształcenie podstawowe
+- 3 = wykształcenie średnie
+- 4 = wykształcenie wyższe 
+
+Przekształćmy te zmienne na typ factor:
+```{r}
+dane$Fedu<-factor(dane$Fedu)
+dane$Medu<-factor(dane$Medu)
+```
+
+Wyodrębnie teraz z tabelki dane tylko potrzebne nam atrybuty:
+```{r}
+dane1<-dane%>%
+  select(Medu,Fedu,G3)
+```
+
+
