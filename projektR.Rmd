@@ -263,3 +263,62 @@ dane5<-dane%>%
 dane5
 ```
 Zależność między oceną końcową, a tym czy rodzice mieszkają razem, jest niewielka. Można jedynie rzec, że to uczniowie których rodzice nie mieszkają razem, poradzili sobie troszeczkę lepiej. Lecz należy mieć na uwadze, że licznośc badanej próbki jest niewielka.
+
+## Wpływ alkoholu
+
+Sprawdźmy jak wyglądają zmienne `Dalc` i `Walc`, które zawierają informacje o spożyciu alkoholu w tygodniu i w weekend.
+
+```{r}
+table(dane$Dalc)
+```
+
+Zmienna `Dalc` jest zmienną jakościową, która mówi nam o spożyciu alkoholu przez ucznia w tygodniu - 1 to bardzo mało, a 5 to bardzo dużo. Jak widzimy najwięcej studentów znajduje się w grupie '1', czyli tej najmniej spożywającej alkohol. Zobaczmy czy sytuacja ulegnie zmianie w weekend:
+```{r}
+table(dane$Walc)
+```
+Sytuacja ulega mocnej zmianie - dużo więcej uczniów spożywa alkohol w weekend. W naszych danych pojawia się jeszcze jedna zmienna - `goout`, która mówi nam o tym, jak często uczeń wychodzi ze znajomymi. Zobaczmy czy między spożyciem alkoholu, a wyjsciami ze znajomymi występuje jakaś zależność. Do sprawdzenia tego stworzę uśrednioną zmienną `spozycie`, która będzie średnia zmiennych `Dalc` i `Walc`.
+```{r}
+dane6<-dane%>%
+  select(Dalc,Walc,absences,goout)%>%
+  mutate("spozycie"=(Dalc+Walc)/2)
+
+
+table(dane6$spozycie,dane6$goout)
+
+```
+Z podanej wyżej tabelki nie widać większych zależności. Stworzmy zatem wykres zależności:
+```{r}
+cor=cor(dane[,c("Dalc","Walc","goout")],
+        method="pearson")
+
+corrplot(cor)
+```
+Występuje niewielka zależność między spożyciem alkoholu a wyjściami ze znajomymi. Co cieawe jest ona troszkę silniejsza w weekendy. Całkiem spora zależność natomiast występuje między spożywaniem alkoholu w weekend i w tygodniu, co może świadczyć o tym, że duża część pijących w weekend również będzie piła w tygodniu.
+
+Alkohol a ocena końcowa G3:
+
+Sprawdźimy teraz, czy między zmienną `Dalc`(spożycie alkoholu w tygodniu), a zmienna `G3` występuje zależność:
+```{r}
+ggplot()+
+  geom_boxplot(aes(x=dane$G3,y=factor(dane$Dalc)))
+```
+Zobaczmy jeszcze statystyki opisowe:
+```{r}
+dane7<-dane%>%
+  select(G3,Dalc)%>%
+  group_by(Dalc)%>%
+  summarise(liczba = n(),
+            srednia = mean(G3),
+            mediana = median(G3),
+            odch.st = sd(G3))
+dane7
+```
+
+Uczniowie najmniej pijący w tygodniu wypadli najlepiej - ich średnia punktów jest najwyższa i jest sporo wartości dochodzących do 14 punktów. Jest to również jedyna grupa uczniów, w której ktoś dostał masymalna ilość punktów. Tutaj ponownie musimy zwrócić uwagę na liczności poszczególnych grup - dla spożycia alkoholu 4 oraz 5 statystki mogą przekłamywać wartości dlatego połączmy grupę 4 oraz 5 z grupą 3.
+
+
+
+
+
+```
+
